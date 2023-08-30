@@ -1,0 +1,50 @@
+#include <Arduino.h>
+
+const int motorEsquerdoPino1 = 22;  // Pino OUT1 do motor esquerdo
+const int motorEsquerdoPino2 = 21;  // Pino OUT2 do motor esquerdo
+const int motorDireitoPino1 = 19;   // Pino OUT3 do motor direito
+const int motorDireitoPino2 = 18;   // Pino OUT4 do motor direito
+const int ultrassonicoTriggerPin = 2;  // Pino TRIGGER do sensor ultrassônico
+const int ultrassonicoEchoPin = 15;    // Pino ECHO do sensor ultrassônico
+
+void setup() {
+  pinMode(motorEsquerdoPino1, OUTPUT);
+  pinMode(motorEsquerdoPino2, OUTPUT);
+  pinMode(motorDireitoPino1, OUTPUT);
+  pinMode(motorDireitoPino2, OUTPUT);
+  pinMode(ultrassonicoTriggerPin, OUTPUT);
+  pinMode(ultrassonicoEchoPin, INPUT);
+
+  digitalWrite(motorEsquerdoPino1, LOW);
+  digitalWrite(motorEsquerdoPino2, LOW);
+  digitalWrite(motorDireitoPino1, LOW);
+  digitalWrite(motorDireitoPino2, LOW);
+
+  digitalWrite(ultrassonicoTriggerPin, LOW);
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Lê a distância do sensor ultrassônico
+  long duracao;
+  float distancia;
+  digitalWrite(ultrassonicoTriggerPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(ultrassonicoTriggerPin, LOW);
+  duracao = pulseIn(ultrassonicoEchoPin, HIGH);
+  distancia = (duracao / 2.0) * 0.0343;
+
+  if (distancia < 30) {  // Ajuste esse valor para a distância desejada
+    // Se a distância for menor que 30 cm, ande para frente
+    digitalWrite(motorEsquerdoPino1, HIGH);
+    digitalWrite(motorEsquerdoPino2, LOW);
+    digitalWrite(motorDireitoPino1, LOW);
+    digitalWrite(motorDireitoPino2, HIGH);
+  } else {
+    // Caso contrário, pare os motores
+    digitalWrite(motorEsquerdoPino1, LOW);
+    digitalWrite(motorEsquerdoPino2, LOW);
+    digitalWrite(motorDireitoPino1, LOW);
+    digitalWrite(motorDireitoPino2, LOW);
+  }
+}
